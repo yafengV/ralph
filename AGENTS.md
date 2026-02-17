@@ -49,3 +49,5 @@ npm run dev
 - Memory persists via git history, `progress.txt`, and `prd.json`
 - Stories should be small enough to complete in one context window
 - Always update AGENTS.md with discovered patterns for future iterations
+- For Codex runs in `ralph.sh`, detect completion from the tail/final response only; scanning full raw output can false-positive when the prompt text is echoed.
+- For Codex runs in `ralph.sh`, avoid streaming raw intermediary logs by default to keep behavior closer to Claude output.
