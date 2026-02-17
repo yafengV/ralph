@@ -81,6 +81,14 @@ fi
 
 echo "Starting Ralph - Tool: $TOOL - Max iterations: $MAX_ITERATIONS"
 
+is_complete_output() {
+  local output="$1"
+  # Only trust completion markers at the very end of output.
+  # Some tools echo the input prompt (which contains this marker),
+  # so scanning the full raw output can produce false positives.
+  echo "$output" | tail -n 5 | grep -q '^<promise>COMPLETE</promise>$'
+}
+
 for i in $(seq 1 $MAX_ITERATIONS); do
   echo ""
   echo "==============================================================="
@@ -95,12 +103,14 @@ for i in $(seq 1 $MAX_ITERATIONS); do
     OUTPUT=$(claude --dangerously-skip-permissions --print < "$SCRIPT_DIR/CLAUDE.md" 2>&1 | tee /dev/stderr) || true
   else
     # Codex: supports overriding the command via RALPH_CODEX_CMD for local setup differences.
+    # We don't stream raw logs here because Codex can emit verbose intermediary events.
     CODEX_CMD="${RALPH_CODEX_CMD:-codex exec --full-auto}"
-    OUTPUT=$(eval "$CODEX_CMD" < "$SCRIPT_DIR/CODEX.md" 2>&1 | tee /dev/stderr) || true
+    OUTPUT=$(eval "$CODEX_CMD" < "$SCRIPT_DIR/CODEX.md" 2>&1) || true
+    echo "$OUTPUT"
   fi
   
   # Check for completion signal
-  if echo "$OUTPUT" | grep -q "<promise>COMPLETE</promise>"; then
+  if is_complete_output "$OUTPUT"; then
     echo ""
     echo "Ralph completed all tasks!"
     echo "Completed at iteration $i of $MAX_ITERATIONS"
