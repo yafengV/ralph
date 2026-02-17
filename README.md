@@ -38,9 +38,9 @@ cp /path/to/ralph/CODEX.md scripts/ralph/CODEX.md      # For Codex
 chmod +x scripts/ralph/ralph.sh
 ```
 
-### Option 2: Install skills globally (Amp)
+### Option 2: Install skills globally (Amp, Claude Code, Codex)
 
-Copy the skills to your Amp or Claude config for use across all projects:
+Copy the skills to your tool config for use across all projects:
 
 For AMP
 ```bash
@@ -52,6 +52,13 @@ For Claude Code (manual)
 ```bash
 cp -r skills/prd ~/.claude/skills/
 cp -r skills/ralph ~/.claude/skills/
+```
+
+For Codex CLI (manual)
+```bash
+mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
+cp -r skills/prd "${CODEX_HOME:-$HOME/.codex}/skills/"
+cp -r skills/ralph "${CODEX_HOME:-$HOME/.codex}/skills/"
 ```
 
 ### Option 3: Use as Claude Code Marketplace
@@ -98,6 +105,12 @@ Use the PRD skill to generate a detailed requirements document:
 Load the prd skill and create a PRD for [your feature description]
 ```
 
+For Codex, this can be phrased the same way:
+
+```
+Use the prd skill to create a PRD for [your feature description]
+```
+
 Answer the clarifying questions. The skill saves output to `tasks/prd-[feature-name].md`.
 
 ### 2. Convert PRD to Ralph format
@@ -106,6 +119,12 @@ Use the Ralph skill to convert the markdown PRD to JSON:
 
 ```
 Load the ralph skill and convert tasks/prd-[feature-name].md to prd.json
+```
+
+For Codex, this can be phrased the same way:
+
+```
+Use the ralph skill to convert tasks/prd-[feature-name].md to prd.json
 ```
 
 This creates `prd.json` with user stories structured for autonomous execution.
@@ -146,8 +165,8 @@ Ralph will:
 | `prd.json` | User stories with `passes` status (the task list) |
 | `prd.json.example` | Example PRD format for reference |
 | `progress.txt` | Append-only learnings for future iterations |
-| `skills/prd/` | Skill for generating PRDs (works with Amp and Claude Code) |
-| `skills/ralph/` | Skill for converting PRDs to JSON (works with Amp and Claude Code) |
+| `skills/prd/` | Skill for generating PRDs (works with Amp, Claude Code, and Codex) |
+| `skills/ralph/` | Skill for converting PRDs to JSON (works with Amp, Claude Code, and Codex) |
 | `.claude-plugin/` | Plugin manifest for Claude Code marketplace discovery |
 | `flowchart/` | Interactive visualization of how Ralph works |
 
